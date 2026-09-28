@@ -3,22 +3,25 @@ import fs from 'fs';
 import path from 'path';
 
 const CONFIG_FILE = path.resolve(process.cwd(), 'email-config.json');
+const TMP_CONFIG_FILE = path.resolve('/tmp', 'email-config.json');
 
 // Get stored configuration
 export function getEmailConfig() {
-  // Check email-config.json
-  if (fs.existsSync(CONFIG_FILE)) {
+  // Check /tmp first (serverless override) then cwd
+  const targetFile = fs.existsSync(TMP_CONFIG_FILE) ? TMP_CONFIG_FILE : CONFIG_FILE;
+
+  if (fs.existsSync(targetFile)) {
     try {
-      const data = fs.readFileSync(CONFIG_FILE, 'utf-8');
+      const data = fs.readFileSync(targetFile, 'utf-8');
       return JSON.parse(data);
     } catch (e) {
-      console.error('Error reading email-config.json:', e);
+      console.error('Error reading email config file:', e);
     }
   }
 
-  // Fallback to process.env
+  // Fallback to process.env (Vercel / Render Environment Variables)
   return {
-    provider: process.env.EMAIL_PROVIDER || 'none', // 'gmail' | 'smtp' | 'ethereal'
+    provider: process.env.EMAIL_PROVIDER || 'gmail',
     user: process.env.SMTP_USER || process.env.GMAIL_USER || '',
     pass: process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || '',
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -35,7 +38,12 @@ export function saveEmailConfig(config) {
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
     return { success: true };
   } catch (e) {
-    return { success: false, error: e.message };
+    try {
+      fs.writeFileSync(TMP_CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
+      return { success: true };
+    } catch (err2) {
+      return { success: false, error: err2.message };
+    }
   }
 }
 
