@@ -54,8 +54,11 @@ export const TimelineView: React.FC<TimelineViewProps> = ({
       </div>
 
       {/* Interactive Horizontal Timeline Bar */}
-      <div className="relative overflow-x-auto pb-4 pt-2">
-        <div className="flex items-center justify-between min-w-[750px] px-4 relative">
+      <div className="relative overflow-x-auto pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="text-[10px] text-slate-400 font-bold mb-1 sm:hidden flex items-center justify-center gap-1">
+          <span>⟵ اسحب أفقياً لتصفح جميع السنوات الدراسية ⟶</span>
+        </div>
+        <div className="flex items-center justify-between min-w-[700px] px-4 relative">
           
           {/* Timeline track line */}
           <div className="absolute top-1/2 left-8 right-8 h-1 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0" />

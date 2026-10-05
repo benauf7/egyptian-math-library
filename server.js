@@ -28,8 +28,19 @@ const MIME_TYPES = {
   '.eot': 'application/vnd.ms-fontobject'
 };
 
-// Rate limiter map
+// Rate limiter map with automatic TTL garbage collection for high concurrency (200+ simultaneous users)
 const rateLimitMap = new Map();
+
+// Periodic cleanup every 2 minutes to free memory from expired IP entries
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) {
+      rateLimitMap.delete(key);
+    }
+  }
+}, 120000).unref();
+
 function isRateLimited(key, maxLimit = 10, windowMs = 60000) {
   const now = Date.now();
   const record = rateLimitMap.get(key);

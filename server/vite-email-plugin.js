@@ -5,6 +5,16 @@ const ADMIN_EMAIL = 'benauf7@gmail.com';
 // In-memory rate limiting map: ip/email -> { count, resetAt }
 const rateLimitMap = new Map();
 
+// Periodic cleanup every 2 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of rateLimitMap.entries()) {
+    if (now > record.resetAt) {
+      rateLimitMap.delete(key);
+    }
+  }
+}, 120000).unref();
+
 function isRateLimited(key, maxLimit = 5, windowMs = 60000) {
   const now = Date.now();
   const record = rateLimitMap.get(key);

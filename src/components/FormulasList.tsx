@@ -278,7 +278,7 @@ export const FormulasList: React.FC<FormulasListProps> = ({
                   {/* KaTeX Math View Box */}
                   <div 
                     onClick={() => onSelectFormula(formula.id)}
-                    className="p-4 my-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 text-center cursor-pointer group-hover:border-indigo-200 dark:group-hover:border-indigo-900 transition-colors"
+                    className="p-3 sm:p-4 my-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-800 text-center cursor-pointer group-hover:border-indigo-200 dark:group-hover:border-indigo-900 transition-colors overflow-x-auto max-w-full"
                   >
                     <MathView math={formula.latex} block={true} />
                   </div>
