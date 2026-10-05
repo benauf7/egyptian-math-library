@@ -12,10 +12,12 @@ import {
   ShieldCheck, 
   ChevronLeft, 
   X,
-  User as UserIcon,
   LogOut,
   CheckCircle2,
-  LogIn
+  LogIn,
+  ShieldAlert,
+  Mail,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -35,15 +37,22 @@ interface SidebarProps {
   onSelectTab: (tab: NavTab) => void;
   isOpen: boolean;
   onClose: () => void;
+  onOpenEmailDrawer?: () => void;
+  onOpenEmailConfig?: () => void;
+  onOpenAdminDashboard?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   currentTab,
   onSelectTab,
   isOpen,
-  onClose
+  onClose,
+  onOpenEmailDrawer,
+  onOpenEmailConfig,
+  onOpenAdminDashboard
 }) => {
-  const { user, openAuthModal, logout } = useAuth();
+  const { user, openAuthModal, logout, sentEmails } = useAuth();
+  const isAdmin = Boolean(user && user.email.trim().toLowerCase() === 'benauf7@gmail.com');
 
   const navItems = [
     { id: 'dashboard' as NavTab, label: 'الرئيسية', icon: BookOpen, badge: null },
@@ -151,12 +160,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* User Account / Profile Section in Sidebar */}
-        <div className="p-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
+        <div className="p-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2">
           {user ? (
-            <div className="p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-2">
+            <div className="p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                     {user.name.charAt(0)}
                   </div>
                   <div className="min-w-0">
@@ -165,7 +174,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </h4>
                     <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-0.5">
                       <CheckCircle2 className="w-2.5 h-2.5" />
-                      <span>حساب مفعل ومؤكد</span>
+                      <span>حساب مفعل</span>
                     </span>
                   </div>
                 </div>
@@ -173,15 +182,66 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   onClick={logout}
                   title="تسجيل الخروج"
-                  className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                  className="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors border border-rose-200 dark:border-rose-900/50"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="text-[10px] text-slate-400 font-mono truncate" dir="ltr">
+              <div className="text-[10px] text-slate-400 font-mono truncate px-1" dir="ltr">
                 {user.email}
               </div>
+
+              {/* Admin Special Quick Actions inside Sidebar */}
+              {isAdmin && (
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-700/80 space-y-1.5">
+                  {onOpenAdminDashboard && (
+                    <button
+                      onClick={() => {
+                        onOpenAdminDashboard();
+                        onClose();
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-black text-white bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 shadow-sm transition-all"
+                    >
+                      <ShieldAlert className="w-3.5 h-3.5" />
+                      <span>لوحة تحكم المسؤول (Dashboard)</span>
+                    </button>
+                  )}
+
+                  <div className="flex items-center gap-1.5">
+                    {onOpenEmailDrawer && (
+                      <button
+                        onClick={() => {
+                          onOpenEmailDrawer();
+                          onClose();
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-[11px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition-colors relative"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>محاكي البريد</span>
+                        {sentEmails.length > 0 && (
+                          <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center">
+                            {sentEmails.length}
+                          </span>
+                        )}
+                      </button>
+                    )}
+
+                    {onOpenEmailConfig && (
+                      <button
+                        onClick={() => {
+                          onOpenEmailConfig();
+                          onClose();
+                        }}
+                        title="إعدادات خادم البريد"
+                        className="flex items-center justify-center gap-1 p-1.5 rounded-xl text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900 border border-amber-300 dark:border-amber-800 transition-colors"
+                      >
+                        <Settings className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="p-3 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/20 border border-indigo-100 dark:border-indigo-900/40 text-center space-y-2">

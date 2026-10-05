@@ -155,12 +155,15 @@ const AppContent: React.FC = () => {
         }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        onOpenEmailDrawer={() => setIsEmailDrawerOpen(true)}
+        onOpenEmailConfig={() => setIsEmailConfigOpen(true)}
+        onOpenAdminDashboard={navigateToAdminDashboard}
       />
 
       {/* Main Content Area (Offset by sidebar width on lg screens) */}
       <div className="flex-1 flex flex-col min-w-0 lg:mr-72 transition-all">
         
-        {/* Top Header containing search bar, controls, auth profile, and email simulator */}
+        {/* Top Header containing ONLY search bar and theme toggle */}
         <TopHeader
           searchQuery={searchQuery}
           onSearchChange={(q) => {
@@ -172,10 +175,6 @@ const AppContent: React.FC = () => {
           isDark={isDark}
           onToggleTheme={handleToggleTheme}
           onOpenSidebar={() => setIsSidebarOpen(true)}
-          onQuickPrint={() => setCurrentTab('print')}
-          onOpenEmailDrawer={() => setIsEmailDrawerOpen(true)}
-          onOpenEmailConfig={() => setIsEmailConfigOpen(true)}
-          onOpenAdminDashboard={navigateToAdminDashboard}
         />
 
         {/* Scrollable Page Body with generous, comfortable spacing */}
