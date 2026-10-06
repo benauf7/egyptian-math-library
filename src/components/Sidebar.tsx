@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenEmailConfig,
   onOpenAdminDashboard
 }) => {
-  const { user, openAuthModal, logout, sentEmails } = useAuth();
+  const { user, openAuthModal, logout, sentEmails, unreadEmailsCount } = useAuth();
   const isAdmin = Boolean(user && user.email.trim().toLowerCase() === 'benauf7@gmail.com');
 
   const navItems = [
@@ -219,9 +219,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       >
                         <Mail className="w-3.5 h-3.5" />
                         <span>محاكي البريد</span>
-                        {sentEmails.length > 0 && (
-                          <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center">
-                            {sentEmails.length}
+                        {unreadEmailsCount > 0 && (
+                          <span className="w-4 h-4 rounded-full bg-indigo-600 text-white text-[9px] font-black flex items-center justify-center animate-pulse">
+                            {unreadEmailsCount}
                           </span>
                         )}
                       </button>

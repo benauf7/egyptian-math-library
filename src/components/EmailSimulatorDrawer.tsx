@@ -14,6 +14,8 @@ import {
   Settings
 } from 'lucide-react';
 
+import { markAllEmailsAsRead } from '../utils/auth-db';
+
 interface EmailSimulatorDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,6 +29,12 @@ export const EmailSimulatorDrawer: React.FC<EmailSimulatorDrawerProps> = ({
 }) => {
   const { sentEmails, openAuthModal } = useAuth();
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      markAllEmailsAsRead();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

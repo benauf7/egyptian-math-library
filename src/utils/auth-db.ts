@@ -394,6 +394,29 @@ export const getRecentEmails = async (emailFilter?: string): Promise<SentEmail[]
   return result;
 };
 
+// Mark all sent emails as read when opening email drawer
+export const markAllEmailsAsRead = async (): Promise<void> => {
+  const local = getLocalEmails();
+  local.forEach(e => { e.read = true; });
+  saveLocalEmails(local);
+
+  const db = await openDB();
+  if (db) {
+    try {
+      const transaction = db.transaction([EMAILS_STORE], 'readwrite');
+      const store = transaction.objectStore(EMAILS_STORE);
+      for (const e of local) {
+        store.put(e);
+      }
+    } catch {
+      // IDB update fallback
+    }
+  }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('egyptian_math_emails_read'));
+  }
+};
+
 // Session Management
 export const getActiveSessionUser = (): User | null => {
   try {

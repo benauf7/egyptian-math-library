@@ -74,14 +74,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       openAuthModal('login', e.detail.reason || 'يجب تسجيل الدخول للمتابعة');
     };
 
+    const handleEmailsRead = () => {
+      refreshEmails();
+    };
+
     window.addEventListener('egyptian_math_auth_changed', handleAuthChange as EventListener);
     window.addEventListener('egyptian_math_email_received', handleEmailReceived as EventListener);
     window.addEventListener('egyptian_math_auth_required', handleAuthRequired as EventListener);
+    window.addEventListener('egyptian_math_emails_read', handleEmailsRead as EventListener);
 
     return () => {
       window.removeEventListener('egyptian_math_auth_changed', handleAuthChange as EventListener);
       window.removeEventListener('egyptian_math_email_received', handleEmailReceived as EventListener);
       window.removeEventListener('egyptian_math_auth_required', handleAuthRequired as EventListener);
+      window.removeEventListener('egyptian_math_emails_read', handleEmailsRead as EventListener);
     };
   }, []);
 
