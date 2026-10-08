@@ -111,6 +111,11 @@ export interface MathFormula {
     solution_steps: string[];
     answer: string;
   };
+  harder_example?: {
+    problem: string;
+    solution_steps: string[];
+    answer: string;
+  };
   common_mistakes?: string[];
   notes: string[];
   related_formula_ids?: string[];

@@ -189,7 +189,7 @@ export const FormulaDetailModal: React.FC<FormulaDetailModalProps> = ({
           {formula.example && (
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
               <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1.5">
-                مثال توضيحي محلول خطوة بخطوة
+                مثال توضيحي قياسي محلول خطوة بخطوة
               </span>
               <p className="text-xs font-bold text-slate-900 dark:text-white mb-2 leading-relaxed">
                 {formula.example.problem}
@@ -202,6 +202,28 @@ export const FormulaDetailModal: React.FC<FormulaDetailModalProps> = ({
               <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
                 <span className="font-semibold text-slate-500">الناتج النهائي:</span>
                 <span className="font-bold text-emerald-600 dark:text-emerald-400">{formula.example.answer}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Harder / Advanced Example */}
+          {formula.harder_example && (
+            <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60">
+              <span className="text-[11px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                مثال أصعب / فكرة متقدمة للتفوق
+              </span>
+              <p className="text-xs font-bold text-slate-900 dark:text-white mb-2 leading-relaxed">
+                {formula.harder_example.problem}
+              </p>
+              <div className="space-y-1.5 border-r-2 border-indigo-500 pr-3 my-2 text-xs text-slate-600 dark:text-slate-300 font-mono" dir="ltr">
+                {formula.harder_example.solution_steps.map((s, idx) => (
+                  <p key={idx} className="text-right font-sans">{s}</p>
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-indigo-200 dark:border-indigo-800 flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-500">الناتج النهائي:</span>
+                <span className="font-bold text-indigo-600 dark:text-indigo-400">{formula.harder_example.answer}</span>
               </div>
             </div>
           )}
@@ -224,12 +246,31 @@ export const FormulaDetailModal: React.FC<FormulaDetailModalProps> = ({
           {/* Notes */}
           {formula.notes.length > 0 && (
             <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-xs">
-              <span className="font-bold text-amber-900 dark:text-amber-300 block mb-1">ملاحظات هامة:</span>
+              <span className="font-bold text-amber-900 dark:text-amber-300 block mb-1">ملاحظات وقوانين مرتبطة:</span>
               <ul className="space-y-1 text-amber-800 dark:text-amber-300/80 list-disc list-inside">
                 {formula.notes.map((note, idx) => (
                   <li key={idx}>{note}</li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Related Formula Badges */}
+          {formula.related_formula_ids && formula.related_formula_ids.length > 0 && (
+            <div className="pt-1">
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block mb-2">
+                موضوعات وقوانين ذات صلة:
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {formula.related_formula_ids.map((relId, idx) => (
+                  <span 
+                    key={idx}
+                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                  >
+                    #{relId.replace('form_', '')}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 
